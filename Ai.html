@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click the Moving Target</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .game-container {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            background-color: #222;
+            border: 5px solid #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+        }
+        .target {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: red;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .timer {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+        }
+        .score {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+        }
+        .start-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .start-button:hover {
+            background-color: #218838;
+        }
+        .progress-bar {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            width: 100%;
+            height: 10px;
+            background-color: #ddd;
+        }
+        .progress-bar-inner {
+            height: 100%;
+            width: 100%;
+            background-color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container" id="gameContainer">
+    <div class="timer" id="timer">Time: 30</div>
+    <div class="score" id="score">Score: 0</div>
+    <div class="progress-bar"><div class="progress-bar-inner" id="progressBar"></div></div>
+    <div class="target" id="target"></div>
+    <button class="start-button" id="startButton" onclick="startGame()">Start Game</button>
+</div>
+
+<script>
+    const gameContainer = document.getElementById('gameContainer');
+    const target = document.getElementById('target');
+    const timerDisplay = document.getElementById('timer');
+    const scoreDisplay = document.getElementById('score');
+    const startButton = document.getElementById('startButton');
+    const progressBar = document.getElementById('progressBar');
+    
+    let score = 0;
+    let timeRemaining = 30;
+    let gameInterval;
+    let targetInterval;
+    let timerInterval;
+    let targetSize = 50; // Starting size of the target
+
+    function startGame() {
+        score = 0;
+        timeRemaining = 30;
+        targetSize = 50;
+        updateScore();
+        updateTimer();
+        updateProgressBar();
+        
+        startButton.style.display = 'none'; // Hide the start button
+        
+        // Move the target at random intervals
+        targetInterval = setInterval(moveTarget, 1000);
+        
+        // Start the timer countdown
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            updateTimer();
+            updateProgressBar();
+            if (timeRemaining <= 0) {
+                endGame();
+            }
+        }, 1000);
+    }
+
+    function updateScore() {
+        scoreDisplay.textContent = `Score: ${score}`;
+    }
+
+    function updateTimer() {
+        timerDisplay.textContent = `Time: ${timeRemaining}`;
+    }
+
+    function updateProgressBar() {
+        const progressWidth = (timeRemaining / 30) * 100;
+        progressBar.style.width = `${progressWidth}%`;
+    }
+
+    function moveTarget() {
+        // Get random position for target
+        const maxX = gameContainer.offsetWidth - targetSize;
+        const maxY = gameContainer.offsetHeight - targetSize;
+        const randomX = Math.random() * maxX;
+        const randomY = Math.random() * maxY;
+
+        // Set random size for the target to make it smaller over time
+        if (timeRemaining < 20 && timeRemaining > 10) {
+            targetSize = 40;
+        } else if (timeRemaining <= 10) {
+            targetSize = 30;
+        }
+
+        target.style.width = `${targetSize}px`;
+        target.style.height = `${targetSize}px`;
+        target.style.left = `${randomX}px`;
+        target.style.top = `${randomY}px`;
+
+        // Change color of target randomly
+        const colors = ['red', 'green', 'blue', 'yellow', 'purple'];
+        target.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function endGame() {
+        clearInterval(gameInterval);
+        clearInterval(targetInterval);
+        clearInterval(timerInterval);
+        alert(`Game Over! Your final score is ${score}.`);
+        startButton.style.display = 'block'; // Show the start button again
+    }
+
+    target.addEventListener('click', () => {
+        score++;
+        updateScore();
+        // Animate the target when clicked
+        target.style.transform = 'scale(1.2)';
+        setTimeout(() => target.style.transform = 'scale(1)', 100);
+        moveTarget(); // Move the target after clicking
+    });
+</script>
+
+</body>
+</html>

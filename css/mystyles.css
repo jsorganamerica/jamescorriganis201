@@ -1,0 +1,26 @@
+body{
+    font-family: 'Raleway';
+    background-color: aquamarine;
+}
+.site-heading-lower{
+    font-family: 'Raleway';
+}
+.mb-3{
+    font-family: 'Comic Sans MS';
+}
+a{
+    font-family: 'Comic Sans MS';
+}
+#mainNav{
+    background-color: rgba(230, 167, 86, 0.9);
+}
+.site-heading-upper{
+    font-family: 'Raleway';
+}
+#mainNav .navbar-brand{
+    background-color: rgba(13, 0, 100, 0.75);
+}
+.section-heading-lower{
+    font font-family: 'Raleway';
+    font-size: 0.8rem;
+}
